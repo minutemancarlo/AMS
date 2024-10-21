@@ -1,0 +1,80 @@
+﻿@page "/login"
+@layout Layout.AuthLayout
+@using AMS.Data.Models.Security
+@using AMS.Web.Authentication
+@using System.Reflection
+@inject UserAccountService userAccountService
+@inject IJSRuntime js
+@inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager navManager
+<MudGrid Spacing="1" Justify="Justify.SpaceBetween">
+    <AuthorizeView>
+        <NotAuthorized>
+            <MudStack>
+                <MudStack Row>
+                    <MudItem>
+                        <MudImage Width="100" Height="100" Src="favicon.png" Alt="Logo"></MudImage>
+                    </MudItem>
+                    <MudItem>
+                        <MudText Typo="Typo.h4" Color="Color.Info"><strong>A</strong>partment</MudText>
+                        <MudText Typo="Typo.h4" Color="Color.Info"><strong>M</strong>anagement</MudText>
+                        <MudText Typo="Typo.h4" Color="Color.Info"><strong>S</strong>ystem</MudText>
+                    </MudItem>
+                </MudStack>
+                <MudTextField @bind-Value="loginModel.Username" Label="Username" Class="my-3" />
+                <MudTextField @bind-Value="loginModel.Password" InputType="InputType.Password" Label="Password" Class="my-3" />
+                <MudButton OnClick="Authenticate" Variant="Variant.Filled" Color="Color.Info" FullWidth>Login</MudButton>
+                <MudStack Spacing="0" AlignItems="AlignItems.Center" Class="pt-5">
+                    <MudText Typo="Typo.caption">AMS @version</MudText>
+                    <MudText Typo="Typo.caption" Class="pb-3">All Rights Reserved. &copy; 2024</MudText>
+                    <MudStack Row AlignItems="AlignItems.Center">
+                        <MudText Typo="Typo.caption">Developed by: </MudText>
+                        <MudImage Src="dev.png" Height="25" Width="75" />
+                    </MudStack>
+                </MudStack>
+            </MudStack>
+        </NotAuthorized>
+        <Authorized>
+            Redirecting...
+        </Authorized>
+    </AuthorizeView>
+
+</MudGrid>
+
+@code {
+    LoginModel loginModel = new();
+    private string? version;
+
+    protected override async Task OnInitializedAsync()
+    {
+        version = Assembly.GetExecutingAssembly().GetName().Version?.ToString();
+        // Check if the user is already authenticated
+        // var authState = await authStateProvider.GetAuthenticationStateAsync();
+        // var user = authState.User;
+
+        // // If the user is authenticated, redirect to the home page
+        // if (user.Identity is not null && user.Identity.IsAuthenticated)
+        // {
+        //     navManager.NavigateTo("/Home", true);
+        // }
+        await base.OnInitializedAsync();
+    }
+
+    private async Task Authenticate()
+    {
+        var userAccount = userAccountService.GetByUserName(loginModel.Username);
+        if (userAccount == null || userAccount.Password != loginModel.Password)
+        {
+            await js.InvokeVoidAsync("alert", "Invalid User Name or Password");
+            return;
+        }
+
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+        await customAuthStateProvider.UpdateAuthenticationState(new UserSession
+            {
+                UserName = userAccount.UserName,
+                Role = userAccount.Role
+            });
+        navManager.NavigateTo("/", true);
+    }
+}

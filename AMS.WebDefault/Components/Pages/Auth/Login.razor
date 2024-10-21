@@ -1,0 +1,67 @@
+﻿@page "/login"
+@using AMS.Data.Models.Security
+@using AMS.Data.Models
+@using System.Reflection
+@using System.Security.Claims
+
+<MudGrid Spacing="1" Justify="Justify.SpaceBetween">
+    <MudItem>
+        <MudImage Width="100" Height="100" Src="favicon.png" Alt="Logo"></MudImage>
+    </MudItem>
+    <MudItem>
+        <MudText Typo="Typo.h4" Color="Color.Info"><strong>A</strong>partment</MudText>
+        <MudText Typo="Typo.h4" Color="Color.Info"><strong>M</strong>anagement</MudText>
+        <MudText Typo="Typo.h4" Color="Color.Info"><strong>S</strong>ystem</MudText>
+
+    </MudItem>
+</MudGrid>
+<MudTextField @bind-Value="loginModel.Username" Label="Username" Class="my-3" />
+<MudTextField @bind-Value="loginModel.Password" InputType="InputType.Password" Label="Password" Class="my-3" />
+<MudButton OnClick="Authenticate" Variant="Variant.Filled" Color="Color.Info" FullWidth>Login</MudButton>
+@* <MudText Typo="Typo.body2" Class="pt-3">Don't have an account? <MudLink Typo="Typo.body2" Class="cursor-pointer" Underline="Underline.Hover">Sign Up</MudLink></MudText> *@
+@* <MudStack Spacing="0" AlignItems="AlignItems.Center" Class="pt-5">
+    <MudText Typo="Typo.caption">AMS @version</MudText>
+    <MudText Typo="Typo.caption" Class="pb-3">All Rights Reserved. &copy; 2024</MudText>
+    <MudStack Row AlignItems="AlignItems.Center">
+        <MudText Typo="Typo.caption">Developed by: </MudText>
+        <MudImage Src="dev.png" Height="25" Width="75" />
+    </MudStack>
+</MudStack> *@
+
+@code {
+    private LoginModel loginModel { get; set; } = new();
+    [Inject]
+    IHttpContextAccessor HttpContextAccessor { get; set; }
+    [Inject] NavigationManager Navigation { get; set; }
+    [Inject] ISnackbar Snackbar { get; set; }
+    private HttpContext httpContext;
+
+    protected override Task OnInitializedAsync()
+    {
+        
+        return base.OnInitializedAsync();
+    }
+
+    private async Task Authenticate()
+    {
+        try
+        {
+            LogggedInUserModel logggedInUser = new LogggedInUserModel(1, "admin", "admin@admin.com");
+            var claims = logggedInUser.ToClaims();
+            var identity = new ClaimsIdentity(claims, StringConstants.AuthScheme);
+            var principal = new ClaimsPrincipal(identity);
+         
+
+            // Perform sign-in
+            await HttpContextAccessor.HttpContext.SignInAsync(StringConstants.AuthScheme, principal);
+
+            // After signing in, navigate
+            Navigation.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            // Handle exceptions (e.g., log or show an error message)
+            Snackbar.Add(ex.Message,Severity.Error);
+        } 
+    }
+}
