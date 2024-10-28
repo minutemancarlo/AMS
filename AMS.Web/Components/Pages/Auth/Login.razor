@@ -35,8 +35,10 @@
                             </MudStack>
                             <MudForm Model="@loginModel" @ref="@loginForm" Validation="@(loginValidator.ValidateValue)" ValidationDelay="0">
                                 <MudTextField @bind-Value="loginModel.UserName" For="@(() => loginModel.UserName)" Label="Username" Class="my-3" />
-                                <MudTextField @bind-Value="loginModel.Password" For="@(() => loginModel.Password)" Label="Password" InputType="InputType.Password" Class="pb-3"
-                                              AdornmentIcon="@Icons.Material.Filled.RemoveRedEye" Adornment="Adornment.End" />
+                                <MudTextField @bind-Value="loginModel.Password" For="@(() => loginModel.Password)"
+                                              Label="Password" InputType="@(showPassword?InputType.Text:InputType.Password)" Class="pb-3"
+                                              AdornmentIcon="@(showPassword?"fa-solid fa-eye-slash":"fa-solid fa-eye")" Adornment="Adornment.End"
+                                              IconSize="Size.Medium" OnAdornmentClick="@(() => showPassword = !showPassword)" />
                             </MudForm>
                             <MudButton OnClick="Authenticate" Variant="Variant.Filled" Color="Color.Info" FullWidth>Login</MudButton>
                             <MudStack Spacing="0" AlignItems="AlignItems.Center" Class="pt-5">

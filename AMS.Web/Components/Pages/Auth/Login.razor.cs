@@ -19,12 +19,13 @@ namespace AMS.Web.Components.Pages.Auth
 
         #region Properties
         private string? version;
+        private bool showPassword = false;
         #endregion
 
         #region Instances
         private UserAccount loginModel = new();
         LoginValidator loginValidator = new();
-        MudForm loginForm;
+        MudForm? loginForm;        
         #endregion
 
         protected override async Task OnInitializedAsync()
@@ -65,7 +66,6 @@ namespace AMS.Web.Components.Pages.Auth
             });
             Navigation.NavigateTo("/", true);
         }
-
 
         private async Task<bool> ValidateModel()
         {
