@@ -1,23 +1,20 @@
 ﻿using AMS.Data.Models.Entities;
-
+using AMS.Data.Repositories.Authentication;
 namespace AMS.Web.Authentication
 {
     public class UserAccountService
     {
-        private List<UserAccount> _users;
+        private readonly IUserManagementRepository _userManagementRepository;        
 
-        public UserAccountService()
+        public UserAccountService(IUserManagementRepository userManagementRepository)
         {
-            _users = new List<UserAccount>
-            {
-                new UserAccount{Id = Guid.NewGuid(), Name = "Carlo Boado" ,UserName = "admin",Email = "admin@admin.com" ,Password = "admin", Role = "Administrator" },
-                new UserAccount{Id = Guid.NewGuid(),Name ="User User" ,UserName = "user", Email = "USER@USER.COM" ,Password = "user", Role = "User" }
-            };
+            _userManagementRepository = userManagementRepository;       
         }
 
-        public UserAccount? GetByUserName(string userName)
+        public async Task<UserAccount?> GetByUserName(string userName)
         {
-            return _users.FirstOrDefault(x => x.UserName == userName);
+            var result = await _userManagementRepository.GetUserInfoAsync(userName);
+            return result;
         }
     }
 }

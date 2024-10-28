@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AMS.Data.Models.Entities;
+using Blazor.SubtleCrypto;
 using FluentValidation;
+using Microsoft.AspNetCore.Components;
 namespace AMS.Data.Models.Validations
 {
     public class LoginValidator : AbstractValidator<UserAccount>
-    {
+    {        
         public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
         {
             var result = await ValidateAsync(ValidationContext<UserAccount>.CreateWithOptions((UserAccount)model, x => x.IncludeProperties(propertyName)));
@@ -27,5 +29,6 @@ namespace AMS.Data.Models.Validations
                 .WithMessage("Password is Required")
                 .Length(1, 100);
         }
+       
     }
 }

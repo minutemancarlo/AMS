@@ -1,8 +1,10 @@
 ﻿using AMS.Data.Models.Entities;
 using AMS.Data.Models.Validations;
 using AMS.Web.Authentication;
+using Blazor.SubtleCrypto;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 using System.Reflection;
 
@@ -15,6 +17,7 @@ namespace AMS.Web.Components.Pages.Auth
         [Inject] UserAccountService userAccountService { get; set; }
         [Inject] AuthenticationStateProvider authStateProvider { get; set; }
         [Inject] NavigationManager Navigation { get; set; }
+        [Inject] ICryptoService Crypto { get; set; }
         #endregion
 
         #region Properties
@@ -25,7 +28,8 @@ namespace AMS.Web.Components.Pages.Auth
         #region Instances
         private UserAccount loginModel = new();
         LoginValidator loginValidator = new();
-        MudForm? loginForm;        
+        MudForm? loginForm;
+
         #endregion
 
         protected override async Task OnInitializedAsync()
@@ -48,10 +52,17 @@ namespace AMS.Web.Components.Pages.Auth
                 return;
             }
 
-            var userAccount = userAccountService.GetByUserName(loginModel.UserName);
-            if (userAccount == null || userAccount.Password != loginModel.Password)
+            var userAccount = await userAccountService.GetByUserName(loginModel.UserName);
+            if (userAccount == null)
             {
                 Snackbar.Add("Invalid Credentials", Severity.Error);
+                return;
+            }
+
+            string decryptedPassword = await Crypto.DecryptAsync(userAccount.Password);
+            if (decryptedPassword != loginModel.Password)
+            {
+                Snackbar.Add("Password does not match.", Severity.Error);
                 return;
             }
 
@@ -65,6 +76,14 @@ namespace AMS.Web.Components.Pages.Auth
                 Role = userAccount.Role
             });
             Navigation.NavigateTo("/", true);
+        }
+
+        private async Task KeyDownSubmit(KeyboardEventArgs args)
+        {
+            if (args.Key == "Enter")
+            {
+                await Authenticate();
+            }
         }
 
         private async Task<bool> ValidateModel()

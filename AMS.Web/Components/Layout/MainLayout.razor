@@ -1,4 +1,7 @@
 ﻿@inherits LayoutComponentBase
+@using AMS.Web.Authentication
+@inject AuthenticationStateProvider authStateProvider
+@inject NavigationManager navManager
 
 <MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode" />
 <MudPopoverProvider />
@@ -16,7 +19,7 @@
                  AriaLabel="Open user menu">
             <MudMenuItem  IconSize="Size.Small" Icon="@Icons.Material.Filled.People">Profile</MudMenuItem>
             <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Settings">My account</MudMenuItem>
-            <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Logout">Logout</MudMenuItem>
+            <MudMenuItem IconSize="Size.Small" OnClick="Logout" Icon="@Icons.Material.Filled.Logout">Logout</MudMenuItem>
         </MudMenu>
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
@@ -106,6 +109,20 @@
         true => Icons.Material.Rounded.AutoMode,
         false => Icons.Material.Outlined.DarkMode,
     };
+
+
+
+    private async Task Logout()
+
+    {
+
+        var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
+
+        await customAuthStateProvider.UpdateAuthenticationState(null);
+
+        navManager.NavigateTo("/", true);
+
+    }
 }
 
 

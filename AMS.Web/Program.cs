@@ -4,9 +4,31 @@ using AMS.Web.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using MudBlazor;
+using Microsoft.Data.SqlClient;
+using System.Data;
+using AMS.Data.Repositories.Authentication;
+using Blazor.SubtleCrypto;
 
 var builder = WebApplication.CreateBuilder(args);
+var environment = builder.Environment;
+if (!string.IsNullOrWhiteSpace(environment.EnvironmentName))
+{
+    builder.Configuration.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+        .AddJsonFile($"appsettings.{environment.EnvironmentName}.json", false, true);
+}
+else
+{
+    builder.Configuration.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+       .AddJsonFile($"appsettings.Production.json", false, true);
+}
 
+// Register your database connection
+builder.Services.AddTransient<IDbConnection>(sp =>
+{
+    IConfiguration configuration = sp.GetRequiredService<IConfiguration>();
+    string connectionString = configuration.GetConnectionString("DefaultConnection");
+    return new SqlConnection(connectionString);
+});
 // Add MudBlazor services
 builder.Services.AddMudServices(config =>
 {
@@ -35,10 +57,16 @@ builder.Services.AddAuthentication(options =>
     options.LogoutPath = "/logout";  // Define your logout path
 });
 
+
+
 builder.Services.AddScoped<ProtectedSessionStorage>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
-builder.Services.AddSingleton<UserAccountService>();
+builder.Services.AddScoped<UserAccountService>();
 
+builder.Services.AddScoped<IUserManagementRepository, UserManagementRepository>();
+builder.Services.AddSubtleCrypto(opt =>
+    opt.Key = "tz31eOWLi0JwhjKz8hiSHvx7BXUhWyIFLGUnDNw7MG24hy-bniDwXrvoF4XyyYE5Gjzp18zQ0jRUpnN2gaQ8OQ"
+);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
