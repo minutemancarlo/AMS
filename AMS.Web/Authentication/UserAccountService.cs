@@ -1,4 +1,6 @@
-﻿namespace AMS.Web.Authentication
+﻿using AMS.Data.Models.Entities;
+
+namespace AMS.Web.Authentication
 {
     public class UserAccountService
     {
@@ -8,8 +10,8 @@
         {
             _users = new List<UserAccount>
             {
-                new UserAccount{ UserName = "admin", Password = "admin", Role = "Administrator" },
-                new UserAccount{ UserName = "user", Password = "user", Role = "User" }
+                new UserAccount{Id = Guid.NewGuid(), Name = "Carlo Boado" ,UserName = "admin",Email = "admin@admin.com" ,Password = "admin", Role = "Administrator" },
+                new UserAccount{Id = Guid.NewGuid(),Name ="User User" ,UserName = "user", Email = "USER@USER.COM" ,Password = "user", Role = "User" }
             };
         }
 

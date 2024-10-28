@@ -1,5 +1,12 @@
-﻿
+﻿@using System.Security.Claims
 <MudNavMenu>
+    <AuthorizeView>
+        <Authorized>
+            <MudText Typo="Typo.h6" Class="px-4">Hi @context.User.FindFirst(x => x.Type == ClaimTypes.Name)?.Value</MudText>
+            <MudText Typo="Typo.body2" Class="px-4 mud-text-secondary">@context.User.FindFirst(x => x.Type == ClaimTypes.Email)?.Value</MudText>
+        </Authorized>
+    </AuthorizeView>
+    <MudDivider Class="my-2" />
     <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
     <MudNavLink Href="counter" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Counter</MudNavLink>
     <MudNavLink Href="weather" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Weather</MudNavLink>

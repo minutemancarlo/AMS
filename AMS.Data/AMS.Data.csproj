@@ -9,7 +9,14 @@
   <ItemGroup>
     <PackageReference Include="Blazor.SubtleCrypto" Version="6.0.1" />
     <PackageReference Include="Dapper" Version="2.1.35" />
+    <PackageReference Include="FluentValidation" Version="11.10.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Enums\" />
+    <Folder Include="Utilities\" />
+    <Folder Include="Repositories\" />
   </ItemGroup>
 
 </Project>

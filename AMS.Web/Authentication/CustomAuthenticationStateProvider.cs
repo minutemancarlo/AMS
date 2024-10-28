@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using System.Security.Claims;
+using AMS.Data.Models.Entities;
 
 namespace AMS.Web.Authentication
 {
@@ -25,7 +26,9 @@ namespace AMS.Web.Authentication
                     return await Task.FromResult(new AuthenticationState(_anonymous));
                 var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, userSession.UserName),
+                    new Claim (ClaimTypes.NameIdentifier, userSession.Id.ToString()),
+                    new Claim(ClaimTypes.Name, userSession.Name),
+                    new Claim(ClaimTypes.Email, userSession.Email),
                     new Claim(ClaimTypes.Role, userSession.Role)
                 }, "CustomAuth"));
                 return await Task.FromResult(new AuthenticationState(claimsPrincipal));
@@ -45,7 +48,9 @@ namespace AMS.Web.Authentication
                 await _sessionStorage.SetAsync("UserSession", userSession);
                 claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, userSession.UserName),
+                     new Claim (ClaimTypes.NameIdentifier, userSession.Id.ToString()),
+                    new Claim(ClaimTypes.Name, userSession.Name),
+                    new Claim(ClaimTypes.Email, userSession.Email),
                     new Claim(ClaimTypes.Role, userSession.Role)
                 }));
             }
