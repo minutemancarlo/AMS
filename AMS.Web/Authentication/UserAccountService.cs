@@ -17,7 +17,13 @@ namespace AMS.Web.Authentication
             return result;
         }
 
-        public async Task<int> UpdateLoginDates(string Id)
+		public async Task<List<UserAccount>> GetAllUserAccounts()
+		{
+			var result = await _userManagementRepository.GetUsersAsync();
+			return result;
+		}
+
+		public async Task<int> UpdateLoginDates(string Id)
         {
             var result = await _userManagementRepository.UpdateLoginDates(Id);
             return result;

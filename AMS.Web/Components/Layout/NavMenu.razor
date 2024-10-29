@@ -11,7 +11,7 @@
     <AuthorizeView Roles="Admin">
         <Authorized>
             <MudNavLink Href="" Match="NavLinkMatch.All" Icon="fa-solid fa-gauge-high">Home</MudNavLink>
-             <MudNavGroup Title="Management" Icon="fa-solid fa-users-gear" Expanded="false">
+             <MudNavGroup Title="Management" Icon="fa-solid fa-users-gear" Expanded="true">
                 <MudNavLink Href="user" Match="NavLinkMatch.Prefix" Icon="fa-solid fa-user-gear">Users</MudNavLink>
                 <MudNavLink Href="roles" Match="NavLinkMatch.Prefix" Icon="fa-solid fa-user-lock">Roles</MudNavLink>
              </MudNavGroup>
@@ -45,7 +45,7 @@
             {
                 var userName = user.FindFirst(c => c.Type == System.Security.Claims.ClaimTypes.Name)?.Value;
                 var lastLogin = user.FindFirst(c => c.Type == System.Security.Claims.ClaimTypes.System)?.Value;
-                Snackbar.Add(new MarkupString($"Welcome {userName}! <br/><br/> Last Login: {lastLogin}"), Severity.Info);
+                Snackbar.Add(new MarkupString($"Welcome {userName}! <br/>Last Login: {lastLogin}"), Severity.Normal);
             }           
         }
 

@@ -16,7 +16,9 @@ namespace AMS.Data.Repositories.Authentication
     public interface IUserManagementRepository
     {
         Task<UserAccount?> GetUserInfoAsync(string userName);
-        Task<int> UpdateLoginDates(string Id);
+        Task<List<UserAccount>> GetUsersAsync();
+
+		Task<int> UpdateLoginDates(string Id);
     }
     public class UserManagementRepository : IUserManagementRepository
     {
@@ -43,8 +45,23 @@ namespace AMS.Data.Repositories.Authentication
             return user;
         }
 
+		public async Task<List<UserAccount>> GetUsersAsync()
+		{
+			var query = "SELECT a.Id, a.Name, a.Username, a.Email, a.Password, a.CurrentLoginDate, a.LastLoginDate, a.isActive, c.Name as Role FROM Users a inner join UserRoles b on a.Id=b.UserId inner join Roles c on b.RoleId=c.Id";
+			
+			var users = (await _dbConnection.QueryAsync<UserAccount>(query)).ToList();
+			foreach (var user in users)
+			{
+				user.CurrentLoginDate = _dateTimeHelper.ConvertUtcToAppTimeZone(user.CurrentLoginDate);
+				user.LastLoginDate = _dateTimeHelper.ConvertUtcToAppTimeZone(user.LastLoginDate);
+			}
 
-        public async Task<int> UpdateLoginDates(string Id)
+			return users;
+		}
+
+
+
+		public async Task<int> UpdateLoginDates(string Id)
         {
             var dateToday = _dateTimeHelper.GetCurrentUtc();
             var query = "Update Users set LastLoginDate = CurrentLoginDate, CurrentLoginDate = @DateToday where Id = @ID";

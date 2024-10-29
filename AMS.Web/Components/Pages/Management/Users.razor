@@ -1,7 +1,61 @@
 ﻿@page "/user"
 @attribute [Authorize(Roles = "Admin")]
+@using AMS.Data.Models.Entities
+
 
 <PageTitle>User Management</PageTitle>
+<MudText Typo="Typo.h6">User Management</MudText>
+
+<MudItem xl="12" lg="12" md="12">
+
+	<MudDataGrid T="UserAccount" MultiSelection="true" Items="@_userAccount" Filterable="true" ColumnResizeMode="ResizeMode.Column" Dense Hover Striped
+				 Loading="_loading" Hideable="true">
+		<ToolBarContent>
+			<MudStack Row Spacing="2">
+				<MudTooltip Placement="Placement.Top" Color="Color.Info" Arrow Text="Add User">
+					<MudFab StartIcon="fa-solid fa-user-plus" Color="Color.Info" Size="Size.Small" />
+				</MudTooltip>
+				<MudTooltip Placement="Placement.Top" Color="Color.Info" Arrow Text="Refresh">
+					<MudFab StartIcon="fa-solid fa-arrows-rotate" Color="Color.Success" Size="Size.Small" OnClick="LoadUserData" />
+				</MudTooltip>
+			</MudStack>
+			<MudSpacer />
+			<MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+						  AdornmentIcon="fa-solid fa-magnifying-glass" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+		</ToolBarContent>
+		<Columns>
+			<SelectColumn T="UserAccount" />
+			<PropertyColumn Property="x => x.Name" Title="Name" Sortable="false" Filterable="false" />
+			<PropertyColumn Property="x => x.Email" />
+			<PropertyColumn Property="x => x.Role" Title="Access" />
+			<PropertyColumn Property="x => x.isActive" Title="Status">
+				<CellTemplate>
+					<MudChip Color="@(context.Item.isActive?Color.Success:Color.Error)" Size="Size.Small" Variant="Variant.Filled" Text="@(context.Item.isActive ? "Active" : "Disabled")" />
+				</CellTemplate>
+			</PropertyColumn>
+			<PropertyColumn Property="x => x.LastLoginDate" Title="Last Login Date" />
+			<TemplateColumn Title="Actions">
+				<CellTemplate>
+					<MudTooltip Placement="Placement.Top" Color="Color.Info" Arrow Text="Update">
+						<MudIconButton Icon="fa-solid fa-user-pen" Color="Color.Info" Variant="Variant.Filled" Size="Size.Small" />
+					</MudTooltip>
+					<MudTooltip Placement="Placement.Top" Color="Color.Info" Arrow Text="Block Access">
+						<MudIconButton Icon="fa-solid fa-ban" Color="Color.Error" Variant="Variant.Filled" Size="Size.Small" />
+					</MudTooltip>
+				</CellTemplate>
+			</TemplateColumn>
+		</Columns>
+		<NoRecordsContent>
+			No Records to Show
+		</NoRecordsContent>
+		<LoadingContent>
+			Loading data...
+		</LoadingContent>
+		<PagerContent>
+			<MudDataGridPager T="UserAccount" />
+		</PagerContent>
+	</MudDataGrid>
+</MudItem>
 
 
 
