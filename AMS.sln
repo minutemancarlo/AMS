@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AMS.Data", "AMS.Data\AMS.Data.csproj", "{B7D58053-C246-4E08-945B-9D86308B9307}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AMS.Data", "AMS.Data\AMS.Data.csproj", "{B7D58053-C246-4E08-945B-9D86308B9307}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AMS.Web", "AMS.Web\AMS.Web.csproj", "{FCB8E781-376C-4E4B-8078-5F9647DF32EE}"
 EndProject

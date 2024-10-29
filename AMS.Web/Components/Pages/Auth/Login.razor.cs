@@ -65,6 +65,7 @@ namespace AMS.Web.Components.Pages.Auth
                 Snackbar.Add("Password does not match.", Severity.Error);
                 return;
             }
+            await userAccountService.UpdateLoginDates(userAccount.Id);
 
             var customAuthStateProvider = (CustomAuthenticationStateProvider)authStateProvider;
             await customAuthStateProvider.UpdateAuthenticationState(new UserSession
@@ -73,8 +74,10 @@ namespace AMS.Web.Components.Pages.Auth
                 Email = userAccount.Email,
                 Name = userAccount.Name,
                 UserName = userAccount.UserName,
-                Role = userAccount.Role
+                Role = userAccount.Role,
+                LastLoginDate = userAccount.LastLoginDate
             });
+         
             Navigation.NavigateTo("/", true);
         }
 

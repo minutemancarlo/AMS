@@ -8,23 +8,30 @@ using System.Threading.Tasks;
 
 namespace AMS.Data.Models.Entities
 {
-    public class UserAccount
+    public class UserAccount : LoginInfo
     {
         public string? Id { get; set; }
         public string? Name { get; set; }
         public string? UserName { get; set; }
         public string? Email { get; set; }
         public string? Password { get; set; }
-        public string? Role { get; set; }
+        public string? Role { get; set; }   
+        public bool isActive { get; set; }
     }
 
-    public class UserSession
+    public class UserSession : LoginInfo
     {
         public string? Id { get; set; }
         public string? Name { get; set; }
         public string? UserName { get; set; }
         public string? Email { get; set; }
         public string? Role { get; set; }
+    }
+
+    public class LoginInfo
+    {
+        public DateTime? CurrentLoginDate { get; set; }
+        public DateTime? LastLoginDate { get; set; }
     }
 
     public class UserRoles

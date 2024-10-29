@@ -30,13 +30,13 @@
                                 </MudItem>
                             </MudStack>
                             <MudForm Model="@loginModel" @ref="@loginForm" Validation="@(loginValidator.ValidateValue)" ValidationDelay="0" Spacing="2">
-                                <MudTextField @bind-Value="loginModel.UserName" For="@(() => loginModel.UserName)" Label="Username" OnKeyDown="KeyDownSubmit" />
-                                <MudTextField @bind-Value="loginModel.Password" For="@(() => loginModel.Password)" Class="pb-3" OnKeyDown="KeyDownSubmit"
+                                <MudTextField @bind-Value="loginModel.UserName" For="@(() => loginModel.UserName)" Label="Username" OnKeyUp="KeyDownSubmit" />
+                                <MudTextField @bind-Value="loginModel.Password" For="@(() => loginModel.Password)" Class="pb-3" OnKeyUp="KeyDownSubmit"
                                               Label="Password" InputType="@(showPassword?InputType.Text:InputType.Password)"
                                               AdornmentIcon="@(showPassword?"fa-solid fa-eye-slash":"fa-solid fa-eye")" Adornment="Adornment.End"
                                               IconSize="Size.Medium" OnAdornmentClick="@(() => showPassword = !showPassword)" />
                             </MudForm>
-                            <MudButton OnClick="Authenticate" Variant="Variant.Filled" Color="Color.Info" FullWidth>Login</MudButton>
+                            <MudButton OnClick="Authenticate" Variant="Variant.Filled" Color="Color.Info" Class="rounded-pill" FullWidth>Login</MudButton>
                             <MudStack Spacing="0" AlignItems="AlignItems.Center" Class="pt-5">
                                 <MudText Typo="Typo.caption">AMS @version</MudText>
                                 <MudText Typo="Typo.caption" Class="pb-3">All Rights Reserved. &copy; 2024</MudText>

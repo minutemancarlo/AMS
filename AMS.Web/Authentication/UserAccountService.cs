@@ -16,5 +16,11 @@ namespace AMS.Web.Authentication
             var result = await _userManagementRepository.GetUserInfoAsync(userName);
             return result;
         }
+
+        public async Task<int> UpdateLoginDates(string Id)
+        {
+            var result = await _userManagementRepository.UpdateLoginDates(Id);
+            return result;
+        }
     }
 }

@@ -29,7 +29,8 @@ namespace AMS.Web.Authentication
                     new Claim (ClaimTypes.NameIdentifier, userSession.Id.ToString()),
                     new Claim(ClaimTypes.Name, userSession.Name),
                     new Claim(ClaimTypes.Email, userSession.Email),
-                    new Claim(ClaimTypes.Role, userSession.Role)
+                    new Claim(ClaimTypes.Role, userSession.Role),
+                    new Claim(ClaimTypes.System, userSession.LastLoginDate?.ToString("MMMM d, yyyy h:mm tt") ?? "No login recorded")
                 }, "CustomAuth"));
                 return await Task.FromResult(new AuthenticationState(claimsPrincipal));
             }
@@ -51,7 +52,8 @@ namespace AMS.Web.Authentication
                      new Claim (ClaimTypes.NameIdentifier, userSession.Id.ToString()),
                     new Claim(ClaimTypes.Name, userSession.Name),
                     new Claim(ClaimTypes.Email, userSession.Email),
-                    new Claim(ClaimTypes.Role, userSession.Role)
+                    new Claim(ClaimTypes.Role, userSession.Role),
+                    new Claim(ClaimTypes.System, userSession.LastLoginDate?.ToString("MMMM d, yyyy h:mm tt") ?? "No login recorded")
                 }));
             }
             else

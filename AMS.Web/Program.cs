@@ -8,6 +8,7 @@ using Microsoft.Data.SqlClient;
 using System.Data;
 using AMS.Data.Repositories.Authentication;
 using Blazor.SubtleCrypto;
+using AMS.Data.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 var environment = builder.Environment;
@@ -29,11 +30,22 @@ builder.Services.AddTransient<IDbConnection>(sp =>
     string connectionString = configuration.GetConnectionString("DefaultConnection");
     return new SqlConnection(connectionString);
 });
+
+//Date Time Helper
+builder.Services.AddTransient<DateTimeHelper>(sp =>
+{
+    var configuration = sp.GetRequiredService<IConfiguration>();
+    var timeZoneId = configuration["TimeZone"];
+    return new DateTimeHelper(timeZoneId);
+});
+
+
 // Add MudBlazor services
 builder.Services.AddMudServices(config =>
 {
-    config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopEnd;
-
+    config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomEnd;
+    config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
+    config.SnackbarConfiguration.BackgroundBlurred = true;
     config.SnackbarConfiguration.PreventDuplicates = false;
     config.SnackbarConfiguration.NewestOnTop = true;
     config.SnackbarConfiguration.ShowCloseIcon = true;
