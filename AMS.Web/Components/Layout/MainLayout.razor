@@ -9,17 +9,17 @@
 <MudSnackbarProvider />
 <MudLayout>
     <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudIconButton Icon="fa-solid fa-bars" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudImage Src="favicon.png" Height="40" Width="40"/>
          <MudText Typo="Typo.h5" Class="ml-3">AMS</MudText>
         <MudSpacer />
         <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
-        <MudMenu Icon="@Icons.Material.Filled.MoreVert" AnchorOrigin="Origin.BottomLeft"
+        <MudMenu Icon="fa-solid fa-ellipsis-vertical" AnchorOrigin="Origin.BottomLeft"
         TransformOrigin="Origin.TopLeft"
                  AriaLabel="Open user menu">
-            <MudMenuItem  IconSize="Size.Small" Icon="@Icons.Material.Filled.People">Profile</MudMenuItem>
-            <MudMenuItem IconSize="Size.Small" Icon="@Icons.Material.Filled.Settings">My account</MudMenuItem>
-            <MudMenuItem IconSize="Size.Small" OnClick="Logout" Icon="@Icons.Material.Filled.Logout">Logout</MudMenuItem>
+            <MudMenuItem  IconSize="Size.Small" Icon="fa-solid fa-circle-user">Profile</MudMenuItem>
+            <MudMenuItem IconSize="Size.Small" Icon="fa-solid fa-gear">My account</MudMenuItem>
+            <MudMenuItem IconSize="Size.Small" OnClick="Logout" Icon="fa-solid fa-right-from-bracket">Logout</MudMenuItem>
         </MudMenu>
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">

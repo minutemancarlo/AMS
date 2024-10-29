@@ -7,9 +7,25 @@
         </Authorized>
     </AuthorizeView>
     <MudDivider Class="my-2" />
-    <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-    <MudNavLink Href="counter" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Counter</MudNavLink>
-    <MudNavLink Href="weather" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Weather</MudNavLink>
+    <AuthorizeView Roles="User">
+        <Authorized>
+            <MudNavLink Href="" Match="NavLinkMatch.All" Icon="fa-solid fa-gauge-high">Home</MudNavLink>
+             <MudNavGroup Title="Management" Icon="fa-solid fa-users-gear" Expanded="false">
+                <MudNavLink Href="user" Match="NavLinkMatch.Prefix" Icon="fa-solid fa-user-gear">Users Management</MudNavLink>
+                <MudNavLink Href="roles" Match="NavLinkMatch.Prefix" Icon="fa-solid fa-user-lock">Roles</MudNavLink>
+             </MudNavGroup>
+            <MudNavLink Href="main" Match="NavLinkMatch.Prefix" Icon="fa-solid fa-bolt">Main Input</MudNavLink>
+            <MudNavLink Href="sub" Match="NavLinkMatch.Prefix" Icon="fa-solid fa-plug-circle-bolt">Sub Input</MudNavLink>
+            <MudNavLink Href="reports" Match="NavLinkMatch.Prefix" Icon="fa-solid fa-file-export">Reports</MudNavLink>
+        </Authorized>
+    </AuthorizeView>
+    <AuthorizeView Roles="Admin">
+        <Authorized>
+            <MudNavLink Href="" Match="NavLinkMatch.All" Icon="fa-solid fa-gauge-high">Dashboard</MudNavLink>            
+            <MudNavLink Href="reports" Match="NavLinkMatch.Prefix" Icon="fa-solid fa-file-export">Reports</MudNavLink>
+        </Authorized>
+    </AuthorizeView>
+    
 </MudNavMenu>
 
 
