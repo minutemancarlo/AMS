@@ -1,0 +1,17 @@
+﻿@using AMS.Data.Models
+
+<MudDialog>
+    <TitleContent>
+        @Action User Information
+    </TitleContent>
+    <DialogContent>
+        Dialog Content
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Close</MudButton>
+        @if(Action != StringConstants.View)
+        {
+            <MudButton Color="Color.Primary" OnClick="Submit">Submit</MudButton>            
+        }
+    </DialogActions>
+</MudDialog>

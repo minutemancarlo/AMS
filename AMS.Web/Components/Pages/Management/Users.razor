@@ -25,7 +25,11 @@
 		</ToolBarContent>
 		<Columns>
 			<SelectColumn T="UserAccount" />
-			<PropertyColumn Property="x => x.Name" Title="Name" Sortable="false" Filterable="false" />
+			<PropertyColumn Property="x => x.Name" Title="Name" Sortable="false" Filterable="false" >
+			<CellTemplate>
+					<MudButton Variant="Variant.Text" ClickPropagation="false" Size="Size.Medium" OnClick="@(() => OnViewUserInfo(context.Item))">@context.Item.Name</MudButton>
+			</CellTemplate>	
+			</PropertyColumn>
 			<PropertyColumn Property="x => x.Email" />
 			<PropertyColumn Property="x => x.Role" Title="Access" />
 			<PropertyColumn Property="x => x.isActive" Title="Status">

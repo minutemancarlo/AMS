@@ -1,14 +1,15 @@
-﻿@inherits LayoutComponentBase
+﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inherits LayoutComponentBase
+@inject ProtectedSessionStorage _sessionStorage
 
-@* <MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode" /> *@
-<MudThemeProvider/>
-
+<MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode" />
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
+
 <MudLayout>    
-    <MudMainContent>
-        <MudGrid Class="d-flex justify-center align-center vh-100" Style="backround-color: red;">
+    <MudMainContent Class="overflow-hidden">
+        <MudGrid Class="d-flex justify-center align-center vh-100">            
             @Body            
         </MudGrid>
     </MudMainContent>
@@ -22,14 +23,12 @@
 </div>
 
 @code {
-    private bool _drawerOpen = true;
     private bool _isDarkMode = false;
     private MudTheme? _theme = null;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
-
+        await base.OnInitializedAsync();                
         _theme = new()
             {
                 PaletteLight = _lightPalette,
@@ -38,15 +37,19 @@
             };
     }
 
-
-    private void DrawerToggle()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _drawerOpen = !_drawerOpen;
+        await base.OnAfterRenderAsync(firstRender);        
+        var result = await _sessionStorage.GetAsync<bool>("DarkModeEnabled");
+        _isDarkMode = result.Value;
+        StateHasChanged();
     }
+    
 
-    private void DarkModeToggle()
+    private async Task DarkModeToggle()
     {
         _isDarkMode = !_isDarkMode;
+        await _sessionStorage.SetAsync("DarkModeEnabled", _isDarkMode);
     }
 
     private readonly PaletteLight _lightPalette = new()

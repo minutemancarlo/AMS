@@ -10,5 +10,9 @@ namespace AMS.Data.Models
     {
         public const string AuthScheme = "app0";
         public const string AuthCookie = "app0";
+        public const string Add = "Add";
+        public const string Update = "Update";
+        public const string Delete = "Delete";
+        public const string View = "View";
     }
 }

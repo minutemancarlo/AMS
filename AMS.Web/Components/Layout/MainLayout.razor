@@ -1,7 +1,9 @@
 ﻿@inherits LayoutComponentBase
 @using AMS.Web.Authentication
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject AuthenticationStateProvider authStateProvider
 @inject NavigationManager navManager
+@inject ProtectedSessionStorage _sessionStorage
 
 <MudThemeProvider Theme="@_theme" IsDarkMode="_isDarkMode" />
 <MudPopoverProvider />
@@ -42,9 +44,9 @@
     private bool _isDarkMode = false;
     private MudTheme? _theme = null;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
+        await base.OnInitializedAsync();
 
         _theme = new()
         {
@@ -54,15 +56,24 @@
         };
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        var result = await _sessionStorage.GetAsync<bool>("DarkModeEnabled");
+        await base.OnAfterRenderAsync(firstRender);
+        _isDarkMode = result.Value;
+        StateHasChanged();
+    }
+
 
     private void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
     }
 
-    private void DarkModeToggle()
+    private async Task DarkModeToggle()
     {
         _isDarkMode = !_isDarkMode;
+        await _sessionStorage.SetAsync("DarkModeEnabled", _isDarkMode);
     }
 
     private readonly PaletteLight _lightPalette = new()
