@@ -3,69 +3,183 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Dapper;
-using Blazor.SubtleCrypto;
-using Microsoft.AspNetCore.Components;
 using AMS.Data.Utilities;
 
 namespace AMS.Data.Repositories.Authentication
 {
-
-    public interface IUserManagementRepository
-    {
-        Task<UserAccount?> GetUserInfoAsync(string userName);
-        Task<List<UserAccount>> GetUsersAsync();
-
+	public interface IUserManagementRepository
+	{
+		Task<UserAccount?> GetUserInfoAsync(string userName);
+		Task<List<UserAccount>> GetUsersAsync();
+		Task<List<UserRoles>> GetRolesAsync();
 		Task<int> UpdateLoginDates(string Id);
-    }
-    public class UserManagementRepository : IUserManagementRepository
-    {
-        private readonly IDbConnection _dbConnection;
-        private readonly DateTimeHelper _dateTimeHelper;
+		Task<bool> UserNameExistsAsync(string userName);
+		Task<bool> UserNameExistsAsync(string userName, string userId);
+		Task<bool> EmailExistsAsync(string email);
+		Task<bool> EmailExistsAsync(string email, string userId);
+		Task<bool> PhoneExistsAsync(string phone);
+		Task<bool> PhoneExistsAsync(string phone, string userId);
+	}
 
-        public UserManagementRepository(IDbConnection dbConnection, DateTimeHelper dateTimeHelper)
-        {
-            _dbConnection = dbConnection;
-            _dateTimeHelper = dateTimeHelper;
-        }
+	public class UserManagementRepository : IUserManagementRepository
+	{
+		private readonly Func<IDbConnection> _connectionFactory;
+		private readonly DateTimeHelper _dateTimeHelper;
 
-        public async Task<UserAccount?> GetUserInfoAsync(string userName)
-        {
-            var query = "SELECT a.Id, a.Name, a.Username, a.Email, a.Password, a.CurrentLoginDate, a.LastLoginDate, a.isActive, c.Name as Role FROM Users a inner join UserRoles b on a.Id=b.UserId inner join Roles c on b.RoleId=c.Id WHERE UserName = @UserName";
-            var user = await _dbConnection.QueryFirstOrDefaultAsync<UserAccount>(query, new { UserName = userName });
+		public UserManagementRepository(Func<IDbConnection> connectionFactory, DateTimeHelper dateTimeHelper)
+		{
+			_connectionFactory = connectionFactory;
+			_dateTimeHelper = dateTimeHelper;
+		}
 
-            if (user != null)
-            {
-                user.CurrentLoginDate = _dateTimeHelper.ConvertUtcToAppTimeZone(user.CurrentLoginDate);
-                user.LastLoginDate = _dateTimeHelper.ConvertUtcToAppTimeZone(user.LastLoginDate);
-            }
+		public async Task<UserAccount?> GetUserInfoAsync(string userName)
+		{
+			var query = "SELECT a.Id, a.Name, a.Username, a.Email, a.Password, a.CurrentLoginDate, a.LastLoginDate, a.isActive, c.Name as Role " +
+						"FROM Users a " +
+						"INNER JOIN UserRoles b ON a.Id = b.UserId " +
+						"INNER JOIN Roles c ON b.RoleId = c.Id " +
+						"WHERE UserName = @UserName";
 
-            return user;
-        }
+			using (var connection = _connectionFactory())
+			{
+				connection.Open();
+				var user = await connection.QueryFirstOrDefaultAsync<UserAccount>(query, new { UserName = userName });
+
+				if (user != null)
+				{
+					user.CurrentLoginDate = _dateTimeHelper.ConvertUtcToAppTimeZone(user.CurrentLoginDate);
+					user.LastLoginDate = _dateTimeHelper.ConvertUtcToAppTimeZone(user.LastLoginDate);
+				}
+
+				return user;
+			}
+		}
 
 		public async Task<List<UserAccount>> GetUsersAsync()
 		{
-			var query = "SELECT a.Id, a.Name, a.Username, a.Email, a.Password, a.CurrentLoginDate, a.LastLoginDate, a.isActive, c.Name as Role FROM Users a inner join UserRoles b on a.Id=b.UserId inner join Roles c on b.RoleId=c.Id";
-			
-			var users = (await _dbConnection.QueryAsync<UserAccount>(query)).ToList();
-			foreach (var user in users)
-			{
-				user.CurrentLoginDate = _dateTimeHelper.ConvertUtcToAppTimeZone(user.CurrentLoginDate);
-				user.LastLoginDate = _dateTimeHelper.ConvertUtcToAppTimeZone(user.LastLoginDate);
-			}
+			var query = "SELECT a.Id, a.Name, a.Username, a.Email, a.Phone, a.Password, a.CurrentLoginDate, a.LastLoginDate, a.isActive, c.Name as Role " +
+						"FROM Users a " +
+						"INNER JOIN UserRoles b ON a.Id = b.UserId " +
+						"INNER JOIN Roles c ON b.RoleId = c.Id";
 
-			return users;
+			using (var connection = _connectionFactory())
+			{
+				connection.Open();
+				var users = (await connection.QueryAsync<UserAccount>(query)).ToList();
+
+				foreach (var user in users)
+				{
+					user.CurrentLoginDate = _dateTimeHelper.ConvertUtcToAppTimeZone(user.CurrentLoginDate);
+					user.LastLoginDate = _dateTimeHelper.ConvertUtcToAppTimeZone(user.LastLoginDate);
+				}
+
+				return users;
+			}
 		}
 
+		public async Task<List<UserRoles>> GetRolesAsync()
+		{
+			var query = "SELECT Id as RoleId, Name as RoleName, CreatedBy, CreatedOn, UpdatedBy, UpdatedOn FROM Roles";
 
+			using (var connection = _connectionFactory())
+			{
+				connection.Open();
+				var roles = (await connection.QueryAsync<UserRoles>(query)).ToList();
+
+				foreach (var role in roles)
+				{
+					role.CreatedOn = _dateTimeHelper.ConvertUtcToAppTimeZone(role.CreatedOn);
+					role.UpdatedOn = _dateTimeHelper.ConvertUtcToAppTimeZone(role.UpdatedOn);
+				}
+
+				return roles;
+			}
+		}
 
 		public async Task<int> UpdateLoginDates(string Id)
-        {
-            var dateToday = _dateTimeHelper.GetCurrentUtc();
-            var query = "Update Users set LastLoginDate = CurrentLoginDate, CurrentLoginDate = @DateToday where Id = @ID";
-            return await _dbConnection.ExecuteScalarAsync<int>(query, new { DateToday = dateToday, ID = Id });
-        }
-    }
+		{
+			var dateToday = _dateTimeHelper.GetCurrentUtc();
+			var query = "UPDATE Users SET LastLoginDate = CurrentLoginDate, CurrentLoginDate = @DateToday WHERE Id = @ID";
+
+			using (var connection = _connectionFactory())
+			{
+				connection.Open();
+				return await connection.ExecuteAsync(query, new { DateToday = dateToday, ID = Id });
+			}
+		}
+
+		public async Task<bool> UserNameExistsAsync(string userName)
+		{
+			var query = "SELECT COUNT(1) FROM Users WHERE UserName = @UserName";
+
+			using (var connection = _connectionFactory())
+			{
+				connection.Open();
+				var result = await connection.ExecuteScalarAsync<int>(query, new { UserName = userName });
+				return result == 0;
+			}
+		}
+
+		public async Task<bool> UserNameExistsAsync(string userName, string userId)
+		{
+			var query = "SELECT COUNT(1) FROM Users WHERE UserName = @UserName AND Id <> @UserId";
+
+			using (var connection = _connectionFactory())
+			{
+				connection.Open();
+				var result = await connection.ExecuteScalarAsync<int>(query, new { UserName = userName, UserId = userId });
+				return result > 0;
+			}
+		}
+
+		public async Task<bool> EmailExistsAsync(string email)
+		{
+			var query = "SELECT COUNT(1) FROM Users WHERE Email = @Email";
+
+			using (var connection = _connectionFactory())
+			{
+				connection.Open();
+				var result = await connection.ExecuteScalarAsync<int>(query, new { Email = email });
+				return result == 0;
+			}
+		}
+
+		public async Task<bool> EmailExistsAsync(string email, string userId)
+		{
+			var query = "SELECT COUNT(1) FROM Users WHERE Email = @Email AND Id <> @UserId";
+
+			using (var connection = _connectionFactory())
+			{
+				connection.Open();
+				var result = await connection.ExecuteScalarAsync<int>(query, new { Email = email, UserId = userId });
+				return result > 0;
+			}
+		}
+
+		public async Task<bool> PhoneExistsAsync(string phone)
+		{
+			var query = "SELECT COUNT(1) FROM Users WHERE Phone = @Phone";
+
+			using (var connection = _connectionFactory())
+			{
+				connection.Open();
+				var result = await connection.ExecuteScalarAsync<int>(query, new { Phone = phone });
+				return result == 0;
+			}
+		}
+
+		public async Task<bool> PhoneExistsAsync(string phone, string userId)
+		{
+			var query = "SELECT COUNT(1) FROM Users WHERE Phone = @Phone AND Id <> @UserId";
+
+			using (var connection = _connectionFactory())
+			{
+				connection.Open();
+				var result = await connection.ExecuteScalarAsync<int>(query, new { Phone = phone, UserId = userId });
+				return result > 0;
+			}
+		}
+	}
 }

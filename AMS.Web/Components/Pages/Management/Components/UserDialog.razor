@@ -1,17 +1,51 @@
 ﻿@using AMS.Data.Models
 
 <MudDialog>
-    <TitleContent>
-        @Action User Information
-    </TitleContent>
-    <DialogContent>
-        Dialog Content
-    </DialogContent>
-    <DialogActions>
-        <MudButton OnClick="Cancel">Close</MudButton>
-        @if(Action != StringConstants.View)
-        {
-            <MudButton Color="Color.Primary" OnClick="Submit">Submit</MudButton>            
-        }
-    </DialogActions>
+	<TitleContent>
+		<MudText Typo="Typo.h6">@Action User Information</MudText>
+	</TitleContent>
+	<DialogContent>
+		<MudStack Spacing="1">
+			@if (Action == StringConstants.Update)
+			{
+				<MudAlert Severity="Severity.Info" Variant="Variant.Outlined">Leave Passwords blank if you don't want to change password.</MudAlert>
+			}
+			<MudForm @ref="userForm" Model="userAccount" ReadOnly="@isReadOnly" Validation="@(userValidator.ValidateValue)" ValidationDelay="5">
+				<MudTextField Variant="Variant.Outlined" @bind-Value="userAccount.UserName" For="@(() => userAccount.UserName)" Label="Username" />
+				<MudTextField Variant="Variant.Outlined" @bind-Value="userAccount.Name" For="@(() => userAccount.Name)" Label="Name" />
+				<MudTextField Variant="Variant.Outlined" @bind-Value="userAccount.Email" For="@(() => userAccount.Email)" InputType="InputType.Email" Label="Email" />
+				<MudTextField Variant="Variant.Outlined" @bind-Value="userAccount.Phone" For="@(() => userAccount.Phone)" MaxLength="11" Label="Phone" />
+				@if (Action == StringConstants.Update || Action == StringConstants.Add)
+				{
+					<MudTextField Variant="Variant.Outlined" @bind-Value="userAccount.Password" For="@(() => userAccount.Password)"
+								  Label="Password" InputType="@(showPassword?InputType.Text:InputType.Password)"
+								  AdornmentIcon="@(showPassword?"fa-solid fa-eye-slash":"fa-solid fa-eye")" Adornment="Adornment.End"
+								  IconSize="Size.Medium" OnAdornmentClick="@(() => showPassword = !showPassword)" />
+					<MudTextField Variant="Variant.Outlined" @bind-Value="userAccount.ConfirmPassword" For="@(() => userAccount.ConfirmPassword)"
+								  Label="Password" InputType="@(showConfirmPassword?InputType.Text:InputType.Password)"
+								  AdornmentIcon="@(showConfirmPassword?"fa-solid fa-eye-slash":"fa-solid fa-eye")" Adornment="Adornment.End"
+								  IconSize="Size.Medium" OnAdornmentClick="@(() => showConfirmPassword = !showConfirmPassword)" />
+				}
+				<MudSwitch @bind-Value="userAccount.isActive" ThumbIcon="@(userAccount.isActive==true ? Icons.Material.Filled.Done : Icons.Material.Filled.Close)"
+						   ThumbIconColor="@(userAccount.isActive==true ? Color.Success : Color.Error)" LabelPosition="LabelPosition.Start">@(userAccount.isActive == true ? new MarkupString("Account Status: <strong> Active </strong>") : new MarkupString("Account Status:<strong> Disabled </strong>"))</MudSwitch>
+			</MudForm>
+		</MudStack>
+	</DialogContent>
+	<DialogActions>
+		<MudButton OnClick="Cancel" Size="Size.Small">Close</MudButton>
+		<MudSpacer />
+		@if (Action != StringConstants.View)
+		{
+			<MudLoadingButton @bind-Loading="_loading" Size="Size.Small" LoadingAdornment="Adornment.Start" OnClick="Submit"
+							  Variant="Variant.Filled" Color="Color.Success">
+				<LoadingContent>
+					@(Action == StringConstants.Add ? "Creating Account" : "Updating Account")
+				</LoadingContent>
+
+				<ChildContent>
+					Submit
+				</ChildContent>
+			</MudLoadingButton>
+		}
+	</DialogActions>
 </MudDialog>

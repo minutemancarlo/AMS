@@ -1,0 +1,47 @@
+﻿@page "/roles"
+@attribute [Authorize(Roles = "Admin")]
+@using AMS.Data.Models.Entities
+
+
+<PageTitle>Access Management</PageTitle>
+<MudText Typo="Typo.h6">Access Management</MudText>
+
+<MudItem xl="12" lg="12" md="12">
+	<MudDataGrid T="UserRoles" MultiSelection="true" Items="@userRoles" Filterable="true" ColumnResizeMode="ResizeMode.Column" Dense Hover Striped
+				 Loading="_loading" Hideable="true">
+		<ToolBarContent>
+			<MudStack Row Spacing="2">				
+				<MudTooltip Placement="Placement.Top" Color="Color.Info" Arrow Text="Refresh">
+					<MudFab StartIcon="fa-solid fa-arrows-rotate" Color="Color.Success" Size="Size.Small" />
+				</MudTooltip>
+			</MudStack>
+			<MudSpacer />
+			<MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+						  AdornmentIcon="fa-solid fa-magnifying-glass" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+		</ToolBarContent>
+		<Columns>
+			<SelectColumn T="UserRoles" />
+			<PropertyColumn Property="x => x.RoleName" Title="Role Name"  />
+			<PropertyColumn Property="x => x.CreatedBy" Title="Created By"  />
+			<PropertyColumn Property="x => x.CreatedOn" Title="Created On"  />
+			<PropertyColumn Property="x => x.UpdatedBy" Title="Updated By"  />
+			<PropertyColumn Property="x => x.UpdatedOn" Title="Updated On"  />
+			@* <TemplateColumn Title="Action" >
+				<CellTemplate>
+					<MudTooltip Placement="Placement.Top" Color="Color.Info" Arrow Text="Update">
+						<MudIconButton Icon="fa-solid fa-pen-to-square" Color="Color.Success" Variant="Variant.Filled" Size="Size.Small" />
+					</MudTooltip>
+				</CellTemplate>
+			</TemplateColumn> *@
+		</Columns>
+		<NoRecordsContent>
+			No Records to Show
+		</NoRecordsContent>
+		<LoadingContent>
+			Loading data...
+		</LoadingContent>
+		<PagerContent>
+			<MudDataGridPager T="UserRoles" />
+		</PagerContent>
+	</MudDataGrid>
+</MudItem>

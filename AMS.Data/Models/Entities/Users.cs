@@ -14,7 +14,9 @@ namespace AMS.Data.Models.Entities
         public string? Name { get; set; }
         public string? UserName { get; set; }
         public string? Email { get; set; }
-        public string? Password { get; set; }
+		public string? Phone { get; set; }
+		public string? Password { get; set; }
+        public string? ConfirmPassword { get; set; }    
         public string? Role { get; set; }   
         public bool isActive { get; set; }
     }
@@ -34,9 +36,9 @@ namespace AMS.Data.Models.Entities
         public DateTime? LastLoginDate { get; set; }
     }
 
-    public class UserRoles
+    public class UserRoles : BaseModel
     {
-        public int RoleId { get; set; } = 0;
+        public string? RoleId { get; set; }
         public string? RoleName { get; set; }
     }
 }

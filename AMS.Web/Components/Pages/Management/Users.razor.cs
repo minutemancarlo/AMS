@@ -33,9 +33,10 @@ namespace AMS.Web.Components.Pages.Management
             { 
                 CloseOnEscapeKey = true, 
                 BackdropClick = false, 
-                Position = DialogPosition.Center,
+                Position = DialogPosition.TopCenter,
                 BackgroundClass = "dialogBlur",
                 FullWidth = true,
+                CloseButton = true,
                 MaxWidth=MaxWidth.Small
             };
 
@@ -47,12 +48,53 @@ namespace AMS.Web.Components.Pages.Management
             await DialogService.ShowAsync<UserDialog>("Simple Dialog", parameters,options);
         }
 
+		private async Task OnUpdateUserInfo(UserAccount dto)
+		{
+			var options = new DialogOptions
+			{
+				CloseOnEscapeKey = true,
+				BackdropClick = false,
+				Position = DialogPosition.TopCenter,
+				BackgroundClass = "dialogBlur",
+				FullWidth = true,
+				CloseButton = true,
+				MaxWidth = MaxWidth.Small
+			};
+
+			var parameters = new DialogParameters<UserDialog>()
+			{
+				{x=>x.Action, StringConstants.Update},
+				{x=>x.userAccount, dto}
+			};
+			await DialogService.ShowAsync<UserDialog>("Simple Dialog", parameters, options);
+		}
+
+		private async Task OnAddUserInfo()
+        {
+            var options = new DialogOptions
+            {
+                CloseOnEscapeKey = true,
+                BackdropClick = false,
+                Position = DialogPosition.TopCenter,
+                BackgroundClass = "dialogBlur",
+                FullWidth = true,
+                CloseButton = true,
+                MaxWidth = MaxWidth.Small
+            };
+
+            var parameters = new DialogParameters<UserDialog>()
+            {
+                {x=>x.Action, StringConstants.Add},
+                {x=>x.userAccount, new UserAccount()}
+            };
+            await DialogService.ShowAsync<UserDialog>("Simple Dialog", parameters, options);
+        }
+
         private async Task LoadUserData()
         {
             try
             {
-                _loading = true;
-                await Task.Delay(2000);
+                _loading = true;                
                 _userAccount = await userAccountService.GetAllUserAccounts();
             }
             catch (Exception ex)

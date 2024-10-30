@@ -23,6 +23,12 @@ namespace AMS.Web.Authentication
 			return result;
 		}
 
+		public async Task<List<UserRoles>> GetAllUserRoles()
+		{
+			var result = await _userManagementRepository.GetRolesAsync();
+			return result;
+		}
+
 		public async Task<int> UpdateLoginDates(string Id)
         {
             var result = await _userManagementRepository.UpdateLoginDates(Id);

@@ -8,12 +8,12 @@
 
 <MudItem xl="12" lg="12" md="12">
 
-	<MudDataGrid T="UserAccount" MultiSelection="true" Items="@_userAccount" Filterable="true" ColumnResizeMode="ResizeMode.Column" Dense Hover Striped
+	<MudDataGrid T="UserAccount" MultiSelection="true" Items="@_userAccount" Filterable="true" ColumnResizeMode="ResizeMode.Column" Dense Hover Striped 
 				 Loading="_loading" Hideable="true">
 		<ToolBarContent>
 			<MudStack Row Spacing="2">
 				<MudTooltip Placement="Placement.Top" Color="Color.Info" Arrow Text="Add User">
-					<MudFab StartIcon="fa-solid fa-user-plus" Color="Color.Info" Size="Size.Small" />
+					<MudFab StartIcon="fa-solid fa-user-plus" Color="Color.Info" Size="Size.Small" OnClick="OnAddUserInfo" />
 				</MudTooltip>
 				<MudTooltip Placement="Placement.Top" Color="Color.Info" Arrow Text="Refresh">
 					<MudFab StartIcon="fa-solid fa-arrows-rotate" Color="Color.Success" Size="Size.Small" OnClick="LoadUserData" />
@@ -24,26 +24,30 @@
 						  AdornmentIcon="fa-solid fa-magnifying-glass" IconSize="Size.Medium" Class="mt-0"></MudTextField>
 		</ToolBarContent>
 		<Columns>
-			<SelectColumn T="UserAccount" />
+			@* <SelectColumn T="UserAccount" /> *@
 			<PropertyColumn Property="x => x.Name" Title="Name" Sortable="false" Filterable="false" >
-			<CellTemplate>
+				<CellTemplate>
 					<MudButton Variant="Variant.Text" ClickPropagation="false" Size="Size.Medium" OnClick="@(() => OnViewUserInfo(context.Item))">@context.Item.Name</MudButton>
-			</CellTemplate>	
+				</CellTemplate>
 			</PropertyColumn>
-			<PropertyColumn Property="x => x.Email" />
-			<PropertyColumn Property="x => x.Role" Title="Access" />
-			<PropertyColumn Property="x => x.isActive" Title="Status">
+			<PropertyColumn Property="x => x.Email"  />
+			<PropertyColumn Property="x => x.Phone" />
+			<PropertyColumn Property="x => x.Role" Title="Access"  />
+			<PropertyColumn Property="x => x.isActive" Title="Status" >
 				<CellTemplate>
 					<MudChip Color="@(context.Item.isActive?Color.Success:Color.Error)" Size="Size.Small" Variant="Variant.Filled" Text="@(context.Item.isActive ? "Active" : "Disabled")" />
 				</CellTemplate>
 			</PropertyColumn>
-			<PropertyColumn Property="x => x.LastLoginDate" Title="Last Login Date" />
-			<TemplateColumn Title="Actions">
+			<PropertyColumn Property="x => x.LastLoginDate" Title="Last Login Date"  />
+			<TemplateColumn Title="Actions" >
 				<CellTemplate>
 					<MudTooltip Placement="Placement.Top" Color="Color.Info" Arrow Text="Update">
-						<MudIconButton Icon="fa-solid fa-user-pen" Color="Color.Info" Variant="Variant.Filled" Size="Size.Small" />
+						<MudIconButton Icon="fa-solid fa-user-pen" Color="Color.Info" Variant="Variant.Filled" OnClick="@(() =>OnUpdateUserInfo(context.Item))" Size="Size.Small" />
 					</MudTooltip>
-					<MudTooltip Placement="Placement.Top" Color="Color.Info" Arrow Text="Block Access">
+					<MudTooltip Placement="Placement.Top" Color="Color.Info" Arrow Text="User Access">
+						<MudIconButton Icon="fa-solid fa-user-shield" Color="Color.Success" Variant="Variant.Filled" Size="Size.Small" />
+					</MudTooltip>
+					<MudTooltip Placement="Placement.Top" Color="Color.Info" Arrow Text="Disable">
 						<MudIconButton Icon="fa-solid fa-ban" Color="Color.Error" Variant="Variant.Filled" Size="Size.Small" />
 					</MudTooltip>
 				</CellTemplate>
