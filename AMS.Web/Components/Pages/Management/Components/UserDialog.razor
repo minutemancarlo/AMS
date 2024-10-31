@@ -10,7 +10,7 @@
 			{
 				<MudAlert Severity="Severity.Info" Variant="Variant.Outlined">Leave Passwords blank if you don't want to change password.</MudAlert>
 			}
-			<MudForm @ref="userForm" Model="userAccount" ReadOnly="@isReadOnly" Validation="@(userValidator.ValidateValue)" ValidationDelay="5">
+			<MudForm @ref="userForm" Model="userAccount" ReadOnly="@isReadOnly" Validation="@(Action == StringConstants.Add?addUserValidator.ValidateValue:updateUserValidator.ValidateValue)" ValidationDelay="5">
 				<MudTextField Variant="Variant.Outlined" @bind-Value="userAccount.UserName" For="@(() => userAccount.UserName)" Label="Username" />
 				<MudTextField Variant="Variant.Outlined" @bind-Value="userAccount.Name" For="@(() => userAccount.Name)" Label="Name" />
 				<MudTextField Variant="Variant.Outlined" @bind-Value="userAccount.Email" For="@(() => userAccount.Email)" InputType="InputType.Email" Label="Email" />

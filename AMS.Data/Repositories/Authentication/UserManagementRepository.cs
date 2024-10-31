@@ -15,12 +15,14 @@ namespace AMS.Data.Repositories.Authentication
 		Task<List<UserAccount>> GetUsersAsync();
 		Task<List<UserRoles>> GetRolesAsync();
 		Task<int> UpdateLoginDates(string Id);
+		Task<int> InsertUserAsync(UserAccount userAccount);
 		Task<bool> UserNameExistsAsync(string userName);
 		Task<bool> UserNameExistsAsync(string userName, string userId);
 		Task<bool> EmailExistsAsync(string email);
 		Task<bool> EmailExistsAsync(string email, string userId);
 		Task<bool> PhoneExistsAsync(string phone);
 		Task<bool> PhoneExistsAsync(string phone, string userId);
+
 	}
 
 	public class UserManagementRepository : IUserManagementRepository
@@ -61,8 +63,8 @@ namespace AMS.Data.Repositories.Authentication
 		{
 			var query = "SELECT a.Id, a.Name, a.Username, a.Email, a.Phone, a.Password, a.CurrentLoginDate, a.LastLoginDate, a.isActive, c.Name as Role " +
 						"FROM Users a " +
-						"INNER JOIN UserRoles b ON a.Id = b.UserId " +
-						"INNER JOIN Roles c ON b.RoleId = c.Id";
+						"LEFT JOIN UserRoles b ON a.Id = b.UserId " +
+						"LEFT JOIN Roles c ON b.RoleId = c.Id";
 
 			using (var connection = _connectionFactory())
 			{
@@ -110,6 +112,29 @@ namespace AMS.Data.Repositories.Authentication
 			}
 		}
 
+		public async Task<int> InsertUserAsync(UserAccount userAccount)
+		{
+			var parameters = new DynamicParameters();
+			parameters.Add("@Id", Guid.NewGuid());
+			parameters.Add("@Username", userAccount.UserName);
+			parameters.Add("@Password", userAccount.Password);
+			parameters.Add("@Email", userAccount.Email);
+			parameters.Add("@Name", userAccount.Name);
+			parameters.Add("@Phone", userAccount.Phone);
+
+			var query = @"INSERT INTO Auth.dbo.Users 
+                  (Id, Username, Password, Email, Name, Phone) 
+                  VALUES 
+                  (@Id, @Username, @Password, @Email, @Name, @Phone)";
+
+			using (var connection = _connectionFactory())
+			{
+				connection.Open();
+				return await connection.ExecuteAsync(query, parameters);
+			}
+		}
+
+
 		public async Task<bool> UserNameExistsAsync(string userName)
 		{
 			var query = "SELECT COUNT(1) FROM Users WHERE UserName = @UserName";
@@ -130,7 +155,7 @@ namespace AMS.Data.Repositories.Authentication
 			{
 				connection.Open();
 				var result = await connection.ExecuteScalarAsync<int>(query, new { UserName = userName, UserId = userId });
-				return result > 0;
+				return result == 1 || result == 0;
 			}
 		}
 
@@ -154,7 +179,7 @@ namespace AMS.Data.Repositories.Authentication
 			{
 				connection.Open();
 				var result = await connection.ExecuteScalarAsync<int>(query, new { Email = email, UserId = userId });
-				return result > 0;
+				return result == 1 || result == 0;
 			}
 		}
 
@@ -178,7 +203,7 @@ namespace AMS.Data.Repositories.Authentication
 			{
 				connection.Open();
 				var result = await connection.ExecuteScalarAsync<int>(query, new { Phone = phone, UserId = userId });
-				return result > 0;
+				return result == 1 || result == 0;
 			}
 		}
 	}
