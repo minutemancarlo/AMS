@@ -22,6 +22,7 @@ namespace AMS.Data.Repositories.Authentication
 		Task<bool> EmailExistsAsync(string email, string userId);
 		Task<bool> PhoneExistsAsync(string phone);
 		Task<bool> PhoneExistsAsync(string phone, string userId);
+		Task<int> UpdateRoleAsync(string roleId, string userId);
 
 	}
 
@@ -108,7 +109,22 @@ namespace AMS.Data.Repositories.Authentication
 			using (var connection = _connectionFactory())
 			{
 				connection.Open();
-				return await connection.ExecuteAsync(query, new { DateToday = dateToday, ID = Id });
+
+				using (var transaction = connection.BeginTransaction())
+				{
+					try
+					{
+						var result = await connection.ExecuteAsync(query, new { DateToday = dateToday, ID = Id }, transaction: transaction);
+
+						transaction.Commit();
+						return result;
+					}
+					catch
+					{
+						transaction.Rollback();
+						throw;
+					}
+				}
 			}
 		}
 
@@ -130,10 +146,52 @@ namespace AMS.Data.Repositories.Authentication
 			using (var connection = _connectionFactory())
 			{
 				connection.Open();
-				return await connection.ExecuteAsync(query, parameters);
+
+				using (var transaction = connection.BeginTransaction())
+				{
+					try
+					{
+						var result = await connection.ExecuteAsync(query, parameters, transaction: transaction);
+
+						transaction.Commit();
+						return result;
+					}
+					catch
+					{
+						transaction.Rollback();
+						throw;
+					}
+				}
 			}
 		}
 
+
+		public async Task<int> UpdateRoleAsync(string roleId, string userId)
+		{
+			var dateToday = _dateTimeHelper.GetCurrentUtc();
+			var query = "usp_UpdateInsert_UserRole";
+
+			using (var connection = _connectionFactory())
+			{
+				connection.Open();
+
+				using (var transaction = connection.BeginTransaction())
+				{
+					try
+					{
+						var result = await connection.ExecuteAsync(query, new { RoleId = roleId, UserId = userId }, transaction: transaction, commandType: CommandType.StoredProcedure);
+
+						transaction.Commit();
+						return result;
+					}
+					catch
+					{
+						transaction.Rollback();
+						throw;
+					}
+				}
+			}
+		}
 
 		public async Task<bool> UserNameExistsAsync(string userName)
 		{

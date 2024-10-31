@@ -1,0 +1,21 @@
+﻿@using AMS.Data.Models.Entities
+@using MudBlazor.Extensions
+<MudDialog>
+	<TitleContent>
+		<MudText Typo="Typo.h6">Role Assignment</MudText>
+	</TitleContent>
+	<DialogContent>
+		<MudStack AlignItems="AlignItems.Baseline" Justify="Justify.Center">
+				<MudTransferList @ref="_transferList" T="UserRoles" @bind-StartCollection="unAssignedRoles" @bind-EndCollection="assignedRoles" Color="Color.Tertiary"
+								 MultiSelection="false" SelectAllType="SelectAllType.None"
+								 ButtonSpacing="3" ToStringFunc="@(e => e?.RoleName)" ButtonVariant="Variant.Filled"
+							 AllowDoubleClick="true" StyleListCommon="@(!isDarkMode?"background-color: var(--mud-palette-background-gray); width: 200px":"width: 200px")"
+								 StartTitle="Roles List" EndTitle="Assigned Roles" />
+		</MudStack>
+	</DialogContent>
+	<DialogActions>
+		<MudButton OnClick="Cancel" Size="Size.Small">Close</MudButton>
+		<MudSpacer />		
+		<MudButton OnClick="Submit" Variant="Variant.Filled" Size="Size.Small" Color="Color.Success">Submit</MudButton>
+	</DialogActions>
+</MudDialog>

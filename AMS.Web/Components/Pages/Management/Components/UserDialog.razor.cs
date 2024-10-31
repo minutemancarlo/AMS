@@ -35,6 +35,7 @@ namespace AMS.Web.Components.Pages.Management.Components
 		private AddUserValidator addUserValidator;
 		private UpdateUserValidator updateUserValidator;
 		MudForm? userForm;
+		
 		#endregion
 
 		protected override Task OnParametersSetAsync()
@@ -48,8 +49,10 @@ namespace AMS.Web.Components.Pages.Management.Components
 			return base.OnParametersSetAsync();
 		}
 
+      
 
-		private async Task Submit()
+
+        private async Task Submit()
 		{
 			try
 			{

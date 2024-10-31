@@ -36,7 +36,7 @@
 		<MudSpacer />
 		@if (Action != StringConstants.View)
 		{
-			<MudLoadingButton @bind-Loading="_loading" Size="Size.Small" LoadingAdornment="Adornment.Start" OnClick="Submit"
+			<MudLoadingButton @bind-Loading="_loading"  Size="Size.Small" LoadingAdornment="Adornment.Start" OnClick="Submit"
 							  Variant="Variant.Filled" Color="Color.Success">
 				<LoadingContent>
 					@(Action == StringConstants.Add ? "Creating Account" : "Updating Account")

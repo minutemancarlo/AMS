@@ -35,6 +35,12 @@ namespace AMS.Web.Authentication
             return result;
         }
 
+		public async Task<int> UpdateRole(string roleId, string userId)
+		{
+			var result = await _userManagementRepository.UpdateRoleAsync(roleId, userId);
+			return result;
+		}
+
 		public async Task<int> InsertUser(UserAccount userAccount)
 		{
 			var result = await _userManagementRepository.InsertUserAsync(userAccount);

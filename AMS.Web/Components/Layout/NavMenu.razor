@@ -1,10 +1,11 @@
 ﻿@using System.Security.Claims
 @using AMS.Web.Authentication
+@using Data.Utilities
 <MudNavMenu>
     <AuthorizeView>
         <Authorized>
-            <MudText Typo="Typo.h6" Class="px-4">Hi @context.User.FindFirst(x => x.Type == ClaimTypes.Name)?.Value</MudText>
-            <MudText Typo="Typo.body2" Class="px-4 mud-text-secondary">@context.User.FindFirst(x => x.Type == ClaimTypes.Email)?.Value</MudText>
+            <MudText Typo="Typo.h6" Class="px-4">Hi @(TextUtility.ToTitleCase(context.User.FindFirst(x => x.Type == ClaimTypes.Name)?.Value))</MudText>
+            <MudText Typo="Typo.body2" Class="px-4 mud-text-secondary">@(context.User.FindFirst(x => x.Type == ClaimTypes.Email)?.Value.ToLower())</MudText>
         </Authorized>
     </AuthorizeView>
     <MudDivider Class="my-2" />
@@ -43,7 +44,7 @@
             {
                 var userName = user.FindFirst(c => c.Type == System.Security.Claims.ClaimTypes.Name)?.Value;
                 var lastLogin = user.FindFirst(c => c.Type == System.Security.Claims.ClaimTypes.System)?.Value;
-                Snackbar.Add(new MarkupString($"Welcome {userName}! <br/>Last Login: {lastLogin}"), Severity.Normal);
+                Snackbar.Add(new MarkupString($"Welcome {TextUtility.ToTitleCase(userName)}! <br/>Last Login: {lastLogin}"), Severity.Normal);
             }           
         }
 

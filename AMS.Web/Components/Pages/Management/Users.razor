@@ -45,10 +45,10 @@
 						<MudIconButton Icon="fa-solid fa-user-pen" Color="Color.Info" Variant="Variant.Filled" OnClick="@(() =>OnUpdateUserInfo(context.Item))" Size="Size.Small" />
 					</MudTooltip>
 					<MudTooltip Placement="Placement.Top" Color="Color.Info" Arrow Text="User Access">
-						<MudIconButton Icon="fa-solid fa-user-shield" Color="Color.Success" Variant="Variant.Filled" Size="Size.Small" />
+						<MudIconButton Icon="fa-solid fa-user-shield" Disabled="@(context.Item.Id == userId?true:false)" Color="Color.Success" Variant="Variant.Filled" Size="Size.Small" OnClick="@(() => OnUpdateRole(context.Item))" />
 					</MudTooltip>
 					<MudTooltip Placement="Placement.Top" Color="Color.Info" Arrow Text="Disable">
-						<MudIconButton Icon="fa-solid fa-ban" Color="Color.Error" Variant="Variant.Filled" Size="Size.Small" />
+						<MudIconButton Icon="fa-solid fa-ban" Color="Color.Error" Disabled="@(context.Item.Id == userId?true:false)" Variant="Variant.Filled" Size="Size.Small" />
 					</MudTooltip>
 				</CellTemplate>
 			</TemplateColumn>
