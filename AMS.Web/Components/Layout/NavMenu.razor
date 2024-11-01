@@ -17,15 +17,21 @@
                 @* <MudNavLink Href="roles" Match="NavLinkMatch.Prefix" Icon="fa-solid fa-user-lock">Roles</MudNavLink> *@
              </MudNavGroup>
             <MudNavLink Href="main" Match="NavLinkMatch.Prefix" Icon="fa-solid fa-bolt">Main Input</MudNavLink>
-            <MudNavLink Href="sub" Match="NavLinkMatch.Prefix" Icon="fa-solid fa-plug-circle-bolt">Sub Input</MudNavLink>            
+            <MudNavLink Href="sub" Match="NavLinkMatch.Prefix" Icon="fa-solid fa-plug-circle-bolt">Sub Input</MudNavLink>  
+            <MudNavLink Href="reports" Match="NavLinkMatch.Prefix" Icon="fa-solid fa-file-export">Reports</MudNavLink>
+            <MudNavGroup Title="Settings" Icon="fa-solid fa-gears" Expanded="true">
+                <MudNavLink Href="logs" Match="NavLinkMatch.Prefix" Icon="fa-solid fa-folder-tree">Log Manager</MudNavLink>
+                <MudNavLink Href="system" Match="NavLinkMatch.Prefix" Icon="fa-solid fa-gear">System Settings</MudNavLink>                
+            </MudNavGroup>            
         </Authorized>
     </AuthorizeView>
     <AuthorizeView Roles="User">
         <Authorized>
             <MudNavLink Href="" Match="NavLinkMatch.All" Icon="fa-solid fa-gauge-high">Dashboard</MudNavLink>                        
+            <MudNavLink Href="reports" Match="NavLinkMatch.Prefix" Icon="fa-solid fa-file-export">Reports</MudNavLink>
         </Authorized>
     </AuthorizeView>
-    <MudNavLink Href="reports" Match="NavLinkMatch.Prefix" Icon="fa-solid fa-file-export">Reports</MudNavLink>
+    <MudNavLink Href="about" Match="NavLinkMatch.Prefix" Icon="fa-solid fa-circle-info">About</MudNavLink>
 </MudNavMenu>
 
 

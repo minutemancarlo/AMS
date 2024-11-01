@@ -46,5 +46,10 @@ namespace AMS.Web.Authentication
 			var result = await _userManagementRepository.InsertUserAsync(userAccount);
 			return result;
 		}
-	}
+        public async Task<int> UpdateUser(UserAccount userAccount)
+        {
+            var result = await _userManagementRepository.UpdateUserAsync(userAccount);
+            return result;
+        }
+    }
 }

@@ -1,0 +1,16 @@
+﻿<MudDialog TitleClass="">
+    <TitleContent>
+        <MudStack Row AlignItems="AlignItems.Baseline">            
+            <MudIcon Icon="@($"fa-solid {Icon}")" Color="@Color"/>
+            <MudText Typo="Typo.h6" Class="fw-bold">@Title</MudText>
+        </MudStack>
+    </TitleContent>
+    <DialogContent>
+        <MudText Typo="Typo.h6">@Message</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="Cancel" Size="Size.Medium">Cancel</MudButton>
+        <MudSpacer/>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Submit" Size="Size.Medium">Confirm</MudButton>
+    </DialogActions>
+</MudDialog>

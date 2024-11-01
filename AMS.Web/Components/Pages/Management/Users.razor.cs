@@ -5,6 +5,8 @@ using MudBlazor;
 using AMS.Web.Components.Pages.Management.Components;
 using AMS.Data.Models;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using Microsoft.Identity.Client;
+using AMS.Web.Components.Pages.General_Components;
 
 namespace AMS.Web.Components.Pages.Management
 {
@@ -61,7 +63,12 @@ namespace AMS.Web.Components.Pages.Management
 				{x=>x.Action, StringConstants.Update},
 				{x=>x.userAccount, dto}
 			};
-			await DialogService.ShowAsync<UserDialog>("Simple Dialog", parameters, options);
+			 var dialog = await DialogService.ShowAsync<UserDialog>("Simple Dialog", parameters, options);
+			var result = await dialog.Result;
+			if (!result.Canceled)
+			{
+				await LoadUserData();
+			}
 		}
 
 		private async Task OnAddUserInfo()
@@ -73,8 +80,13 @@ namespace AMS.Web.Components.Pages.Management
 				{x=>x.Action, StringConstants.Add},
 				{x=>x.userAccount, new UserAccount()}
 			};
-			await DialogService.ShowAsync<UserDialog>("Simple Dialog", parameters, options);
-		}
+			var dialog = await DialogService.ShowAsync<UserDialog>("Simple Dialog", parameters, options);
+            var result = await dialog.Result;
+            if (!result.Canceled)
+            {
+                await LoadUserData();
+            }
+        }
 
 		private async Task OnUpdateRole(UserAccount user)
 		{
@@ -109,6 +121,28 @@ namespace AMS.Web.Components.Pages.Management
 				Snackbar.Add($"{ex.Message}", Severity.Error);
 			}			
 		}
+
+		private async Task OnChangeStatus(UserAccount user)
+		{
+            DialogOptions options = new DialogOptions()
+            {
+                CloseOnEscapeKey = true,
+                BackdropClick = false,
+                Position = DialogPosition.Center,
+                BackgroundClass = "dialogBlur",
+                FullWidth = true,
+                CloseButton = true,
+                MaxWidth = MaxWidth.ExtraSmall
+            };
+            var parameters = new DialogParameters<ConfirmDialog>
+                {
+                    { x => x.Title, "Confirm"},
+                    { x => x.Icon, "fa-circle-question"},
+					{ x => x.Color, Color.Info},
+					{ x => x.Message, $"Are you sure you want to {(user.isActive?"disable":"enable")} this account?"}
+				};
+            var dialog = await DialogService.ShowAsync<ConfirmDialog>("Simple Dialog", parameters, options);
+        }
 
 		private async Task LoadUserData()
 		{

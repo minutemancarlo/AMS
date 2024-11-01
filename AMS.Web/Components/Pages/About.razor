@@ -1,0 +1,74 @@
+﻿@page "/about"
+@attribute [Authorize]
+
+<MudGrid Class="d-flex justify-center align-center">
+    <MudItem>
+        <MudCard Elevation="4" Class="pa-3">
+            <MudCardContent>
+                <MudGrid Spacing="1" Justify="Justify.SpaceBetween">
+                    <MudStack Spacing="0">
+                        <MudStack Row>
+                            <MudItem>
+                                <MudImage Width="100" Height="100" Src="favicon.png" Alt="Logo"></MudImage>
+                            </MudItem>
+                            <MudItem>
+                                <MudText Typo="Typo.h4" Color="Color.Info"><strong>A</strong>partment</MudText>
+                                <MudText Typo="Typo.h4" Color="Color.Info"><strong>M</strong>anagement</MudText>
+                                <MudText Typo="Typo.h4" Color="Color.Info"><strong>S</strong>ystem</MudText>
+                            </MudItem>
+                        </MudStack>
+                        <MudStack Spacing="0" AlignItems="AlignItems.Start">
+                            <MudText Typo="Typo.caption">Version 1.0.0</MudText>
+                            <MudText Typo="Typo.caption" Class="pb-3">All Rights Reserved. &copy; 2024</MudText>
+                            <MudStack Row AlignItems="AlignItems.Center" Class="pb-5">
+                                <MudText Typo="Typo.caption">Developed by: </MudText>
+                                <MudImage Src="dev.png" Height="25" Width="75" />
+                            </MudStack>
+                        </MudStack>
+                        <MudExpansionPanels MultiExpansion="true">
+                            <MudExpansionPanel Text="" HeaderClass="fw-bold"  Expanded>
+                                <TitleContent>
+                                    <div class="d-flex">
+                                        <MudIcon Icon="fa-solid fa-info-circle" class="mr-3"></MudIcon>
+                                        <MudText Typo="Typo.h6" Class="fw-bold">Electricity Usage and Cost Calculation</MudText>
+                                    </div>
+                                </TitleContent>
+                                <ChildContent>                                    
+                                    <MudText Typo="Typo.subtitle1">Formula for kWh Used</MudText>
+                                    <MudText>
+                                        kWh Used = Ending Meter Reading - Starting Meter Reading
+                                    </MudText>
+
+                                    <MudText Typo="Typo.subtitle1">Formula for Cost Per Submeter (₱)</MudText>
+                                    <MudText>
+                                        Cost Per Submeter (₱) = kWh Used × Rate Per kWh (₱)
+                                    </MudText>
+
+                                    <MudText Typo="Typo.h6" Class="py-2">Example Calculation</MudText>
+                                    <MudText Typo="Typo.subtitle2">1. Find the kWh Used for Each Submeter</MudText>
+                                    <MudText>
+                                        Suppose Submeter A has an ending reading of 1200 kWh and a starting reading of 1150 kWh. Then:
+                                    </MudText>
+                                    <MudText Typo="Typo.body2" Style="font-weight: bold;">
+                                        kWh Used = 1200 - 1150 = 50 kWh
+                                    </MudText>
+
+                                    <MudText Typo="Typo.subtitle2">2. Calculate the Cost in Pesos</MudText>
+                                    <MudText>
+                                        If the rate is ₱10 per kWh, the cost for Submeter A is:
+                                    </MudText>
+                                    <MudText Typo="Typo.body2" Style="font-weight: bold;">
+                                        Cost Per Submeter = 50 kWh × 10 Php/kWh = ₱500
+                                    </MudText>
+
+                                </ChildContent>
+                            </MudExpansionPanel>                            
+                        </MudExpansionPanels>
+                    </MudStack>
+                </MudGrid>
+            </MudCardContent>
+         
+        </MudCard>
+    </MudItem>
+</MudGrid>
+

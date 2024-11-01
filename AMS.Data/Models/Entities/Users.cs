@@ -41,4 +41,12 @@ namespace AMS.Data.Models.Entities
         public string? RoleId { get; set; }
         public string? RoleName { get; set; }
     }
+
+    public class RememberMe
+    {
+        public bool Remember { get; set; } = false;
+        public string? UserName { get; set; }
+        public string? Password { get; set; }
+    }
+
 }

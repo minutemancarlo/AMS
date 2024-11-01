@@ -36,6 +36,7 @@
                                               AdornmentIcon="@(showPassword?"fa-solid fa-eye-slash":"fa-solid fa-eye")" Adornment="Adornment.End"
                                               IconSize="Size.Medium" OnAdornmentClick="@(() => showPassword = !showPassword)" />
                             </MudForm>
+                                <MudCheckBox @bind-Value="RememberMe.Remember" Label="Remember Me"></MudCheckBox>
                             <MudButton OnClick="Authenticate" Variant="Variant.Filled" Color="Color.Info" Class="rounded-pill" FullWidth>Login</MudButton>
                             <MudStack Spacing="0" AlignItems="AlignItems.Center" Class="pt-5">
                                 <MudText Typo="Typo.caption">AMS @version</MudText>

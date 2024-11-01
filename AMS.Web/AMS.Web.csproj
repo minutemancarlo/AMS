@@ -16,9 +16,4 @@
   <ItemGroup>
     <ProjectReference Include="..\AMS.Data\AMS.Data.csproj" />
   </ItemGroup>
-
-
-  <ItemGroup>
-    <Folder Include="Components\Pages\General Components\" />
-  </ItemGroup>
 </Project>

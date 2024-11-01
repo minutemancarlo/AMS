@@ -45,7 +45,7 @@ builder.Services.AddTransient<DateTimeHelper>(sp =>
 // Add MudBlazor services
 builder.Services.AddMudServices(config =>
 {
-    config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomEnd;
+    config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.TopEnd;
     config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
     config.SnackbarConfiguration.BackgroundBlurred = true;
     config.SnackbarConfiguration.PreventDuplicates = false;

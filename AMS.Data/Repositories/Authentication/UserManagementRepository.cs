@@ -23,8 +23,10 @@ namespace AMS.Data.Repositories.Authentication
 		Task<bool> PhoneExistsAsync(string phone);
 		Task<bool> PhoneExistsAsync(string phone, string userId);
 		Task<int> UpdateRoleAsync(string roleId, string userId);
+		Task<int> UpdateUserAsync(UserAccount userAccount);
 
-	}
+
+    }
 
 	public class UserManagementRepository : IUserManagementRepository
 	{
@@ -138,7 +140,7 @@ namespace AMS.Data.Repositories.Authentication
 			parameters.Add("@Name", userAccount.Name);
 			parameters.Add("@Phone", userAccount.Phone);
 
-			var query = @"INSERT INTO Auth.dbo.Users 
+			var query = @"INSERT INTO Users 
                   (Id, Username, Password, Email, Name, Phone) 
                   VALUES 
                   (@Id, @Username, @Password, @Email, @Name, @Phone)";
@@ -165,8 +167,50 @@ namespace AMS.Data.Repositories.Authentication
 			}
 		}
 
+        public async Task<int> UpdateUserAsync(UserAccount userAccount)
+        {
+            var parameters = new DynamicParameters();
+            parameters.Add("@Id", userAccount.Id);
+            parameters.Add("@Username", userAccount.UserName);			
+            parameters.Add("@Email", userAccount.Email);
+            parameters.Add("@Name", userAccount.Name);
+            parameters.Add("@Phone", userAccount.Phone);
+			string query = String.Empty;
+            if (!string.IsNullOrEmpty(userAccount.Password))
+            {
+                parameters.Add("@Password", userAccount.Password);
+                query = @"Update Users SET Username = @Username, Password = @Password ,Email = @Email, Name = @Name, Phone = @Phone Where Id=@Id";
+            }
+			else
+			{
+                query = @"Update Users SET Username = @Username, Email = @Email, Name = @Name, Phone = @Phone Where Id=@Id";
+            }
+          
 
-		public async Task<int> UpdateRoleAsync(string roleId, string userId)
+            using (var connection = _connectionFactory())
+            {
+                connection.Open();
+
+                using (var transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        var result = await connection.ExecuteAsync(query, parameters, transaction: transaction);
+
+                        transaction.Commit();
+                        return result;
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
+            }
+        }
+
+
+        public async Task<int> UpdateRoleAsync(string roleId, string userId)
 		{
 			var dateToday = _dateTimeHelper.GetCurrentUtc();
 			var query = "usp_UpdateInsert_UserRole";
