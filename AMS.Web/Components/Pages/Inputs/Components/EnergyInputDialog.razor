@@ -1,0 +1,99 @@
+﻿@using AMS.Data.Models.Entities
+@using AMS.Data.Models
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">@Action @(input.IsMainInput ? "Main" : "Unit") Energy Input</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudForm @ref="form" Model="input" Spacing="2">
+            <MudCard Class="pa-2" Elevation="4">
+                <MudCardContent>
+                    <MudStack Spacing="1">
+                        <MudDatePicker Label="Reading Date" @bind-Date="input.ReadingDate" PickerVariant="PickerVariant.Dialog" Variant="Variant.Outlined" Margin="Margin.Dense" />
+                        @if (!input.IsMainInput)
+                        {
+                            <MudSelect Margin="Margin.Dense" Adornment="Adornment.Start" @bind-Value="input.UnitNumber" AdornmentIcon="fa-solid fa-door-open" IconSize="Size.Small">
+                                <MudSelectItem Value="1" />
+                                <MudSelectItem Value="2" />
+                                <MudSelectItem Value="3" />
+                                <MudSelectItem Value="4" />
+                            </MudSelect>
+                        }
+                    </MudStack>
+                </MudCardContent>
+            </MudCard>
+            <MudCard Class="pa-2" Elevation="4">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6">Previous Usage</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudStack Spacing="1">
+                        <MudNumericField @bind-Value="input.ReadingInput.PreviousReadingKwh" Label="Kwh Used" HideSpinButtons Variant="Variant.Outlined" Margin="Margin.Dense" Adornment="Adornment.Start" AdornmentIcon="fa-solid fa-plug-circle-bolt" IconSize="Size.Small" />
+                        <MudNumericField @bind-Value="input.ReadingInput.PreviousConsumption" Label="Cost" HideSpinButtons Variant="Variant.Outlined" Margin="Margin.Dense" Adornment="Adornment.Start" AdornmentIcon="fa-solid fa-peso-sign" IconSize="Size.Small" />
+                    </MudStack>
+                </MudCardContent>
+            </MudCard>
+            <MudCard Class="pa-2" Elevation="4">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6">Present Usage</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudStack Spacing="1">
+                        <MudNumericField @bind-Value="input.ReadingInput.PresentReadingKwh" Label="Kwh Used" HideSpinButtons Variant="Variant.Outlined" Margin="Margin.Dense" Adornment="Adornment.Start" AdornmentIcon="fa-solid fa-plug-circle-bolt" IconSize="Size.Small" />
+                        <MudNumericField @bind-Value="input.ReadingInput.PresentConsumption" Label="Cost" HideSpinButtons Variant="Variant.Outlined" Margin="Margin.Dense" Adornment="Adornment.Start" AdornmentIcon="fa-solid fa-peso-sign" IconSize="Size.Small" />
+                    </MudStack>
+                </MudCardContent>
+            </MudCard>
+            <MudCard Class="pa-2" Elevation="4">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h6">Total Usage</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudStack Spacing="1">
+                        <MudNumericField @bind-Value="input.TotalKwhUsed" Label="Kwh Used" HideSpinButtons Variant="Variant.Outlined" Margin="Margin.Dense" Adornment="Adornment.Start" AdornmentIcon="fa-solid fa-plug-circle-bolt" IconSize="Size.Small" />
+                        <MudNumericField @bind-Value="input.TotalComsumption" Label="Cost" HideSpinButtons Variant="Variant.Outlined" Margin="Margin.Dense" Adornment="Adornment.Start" AdornmentIcon="fa-solid fa-peso-sign" IconSize="Size.Small" />
+                    </MudStack>
+                </MudCardContent>
+            </MudCard>
+        </MudForm>
+        <MudDivider DividerType="DividerType.Inset" />
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel" Size="Size.Small">Close</MudButton>
+        <MudSpacer />
+        @if (Action != StringConstants.View)
+        {
+            <MudLoadingButton @bind-Loading="_loading" Size="Size.Small" LoadingAdornment="Adornment.Start" OnClick="Submit"
+                              Variant="Variant.Filled" Color="Color.Success">
+                <LoadingContent>
+                    @(Action == StringConstants.Add ? "Adding Energy Input" : "Updating Energy Input")
+                </LoadingContent>
+
+                <ChildContent>
+                    Submit
+                </ChildContent>
+            </MudLoadingButton>
+        }
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
+    [Inject] ISnackbar Snackbar { get; set; }
+    [Parameter] public string? userId { get; set; }
+    [Parameter] public EnergyInput input { get; set; }
+    [Parameter] public string? Action { get; set; }
+    MudForm? form;
+    private bool _loading = false;
+    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+
+    private void Cancel() => MudDialog.Cancel();
+}

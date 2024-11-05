@@ -1,0 +1,78 @@
+﻿@page "/main"
+@attribute [Authorize(Roles = "Admin")]
+@using AMS.Data.Models.Entities
+@using AMS.Data.Models
+
+<PageTitle>Main Input</PageTitle>
+<MudText Typo="Typo.h6">Main Meter Consumption</MudText>
+
+<MudGrid Justify="Justify.Center" Class="w-100">
+    <MudItem xl="12" lg="12" md="12" sm="12">
+        <MudDataGrid T="EnergyInput" MultiSelection="true" Items="@mainEnergyInput" Filterable="true" ColumnResizeMode="ResizeMode.Container" Hover Striped
+                     Loading="_loading" Hideable="true">
+            <ToolBarContent>
+                <MudStack Row Spacing="2">
+                    <MudTooltip Placement="Placement.Top" Color="Color.Info" Arrow Text="Add Energy Input">
+                        <MudFab StartIcon="fa-solid fa-plug-circle-plus" Color="Color.Info" Size="Size.Small" OnClick="@(() => OnShowInputDialog(new EnergyInput(), StringConstants.Add))" />
+                    </MudTooltip>
+                    <MudTooltip Placement="Placement.Top" Color="Color.Info" Arrow Text="Refresh">
+                        <MudFab StartIcon="fa-solid fa-arrows-rotate" Color="Color.Success" Size="Size.Small" />
+                    </MudTooltip>
+                </MudStack>
+                <MudSpacer />
+            </ToolBarContent>
+            <Columns>
+                @* <SelectColumn T="UserAccount" /> *@
+
+                <PropertyColumn Property="x => x.ReadingDate" Title="Reading Date">
+                    <CellTemplate>
+                        @(context.Item.ReadingDate.HasValue ? context.Item.ReadingDate.Value.ToShortDateString() : "No date defined")
+                    </CellTemplate>
+                </PropertyColumn>
+                <PropertyColumn Property="x => x.ReadingInput.PreviousReadingKwh" Title="Previous Usage">
+                    <CellTemplate>
+                        <MudStack Spacing="0">
+                            <MudText Typo="Typo.body2">
+                                <strong>Usage: </strong> @context.Item.ReadingInput.PreviousReadingKwh
+                            </MudText>
+                            <MudText Typo="Typo.body2">
+                                <strong>Cost: </strong>₱ @context.Item.ReadingInput.PreviousConsumption
+                            </MudText>
+                        </MudStack>
+                    </CellTemplate>
+                </PropertyColumn>
+                <PropertyColumn Property="x => x.ReadingInput.PresentReadingKwh" Title="Present Usage">
+                    <CellTemplate>
+                        <MudStack Spacing="0">
+                            <MudText Typo="Typo.body2">
+                                <strong>Usage: </strong> @context.Item.ReadingInput.PresentReadingKwh
+                            </MudText>
+                            <MudText Typo="Typo.body2">
+                                <strong>Cost: </strong>₱ @context.Item.ReadingInput.PresentConsumption
+                            </MudText>
+                        </MudStack>
+                    </CellTemplate>
+                </PropertyColumn>                
+                <PropertyColumn Property="x => x.TotalKwhUsed" Title="Total Kwh Used" />
+                <PropertyColumn Property="x => x.TotalComsumption" Title="Total Consumption Cost" Format="N3">
+                    <CellTemplate>
+                        ₱ @context.Item.TotalComsumption
+                    </CellTemplate>
+                    </PropertyColumn>
+                <PropertyColumn Property="x => x.ReadingInput.CreatedBy" Title="Created By" />
+                <PropertyColumn Property="x => x.ReadingInput.CreatedOn" Title="Created On" />
+                <PropertyColumn Property="x => x.ReadingInput.UpdatedBy" Title="Updated By" />
+                <PropertyColumn Property="x => x.ReadingInput.UpdatedOn" Title="Updated On" />
+            </Columns>
+            <NoRecordsContent>
+                No Records to Show
+            </NoRecordsContent>
+            <LoadingContent>
+                Loading data...
+            </LoadingContent>
+            <PagerContent>
+                <MudDataGridPager T="EnergyInput" />
+            </PagerContent>
+        </MudDataGrid>
+    </MudItem>
+</MudGrid>
